@@ -24,8 +24,8 @@ export type SubscriptionNotifications = {
 // Subscription redux types
 export type SubscriptionState = {
   subscriptions: Array<Subscription>,
-  hasFetchedSubscriptions: boolean,
   notifications: SubscriptionNotifications,
+  loading: boolean,
 };
 
 // Subscription action types
@@ -37,10 +37,6 @@ type doChannelSubscribe = {
 type doChannelUnsubscribe = {
   type: ACTIONS.CHANNEL_UNSUBSCRIBE,
   data: Subscription,
-};
-
-type HasFetchedSubscriptions = {
-  type: ACTIONS.HAS_FETCHED_SUBSCRIPTIONS,
 };
 
 type setSubscriptionLatest = {
@@ -75,10 +71,14 @@ type CheckSubscriptionCompleted = {
   type: ACTIONS.CHECK_SUBSCRIPTION_COMPLETED,
 };
 
+type fetchedSubscriptionsSucess = {
+  type: ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS,
+  data: Array<Subscription>,
+};
+
 export type Action =
   | doChannelSubscribe
   | doChannelUnsubscribe
-  | HasFetchedSubscriptions
   | setSubscriptionLatest
   | setSubscriptionNotification
   | CheckSubscriptionStarted
@@ -161,7 +161,7 @@ export default handleActions(
     }),
     [ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS]: (
       state: SubscriptionState,
-      action
+      action: fetchedSubscriptionsSucess
     ): SubscriptionState => ({
       ...state,
       loading: false,
