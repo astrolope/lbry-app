@@ -88,8 +88,8 @@ export type Dispatch = (action: Action) => any;
 
 const defaultState = {
   subscriptions: [],
-  hasFetchedSubscriptions: false,
   notifications: {},
+  loading: false,
 };
 
 export default handleActions(
@@ -122,10 +122,6 @@ export default handleActions(
         subscriptions: newSubscriptions,
       };
     },
-    [ACTIONS.HAS_FETCHED_SUBSCRIPTIONS]: (state: SubscriptionState): SubscriptionState => ({
-      ...state,
-      hasFetchedSubscriptions: true,
-    }),
     [ACTIONS.SET_SUBSCRIPTION_LATEST]: (
       state: SubscriptionState,
       action: setSubscriptionLatest
@@ -154,6 +150,22 @@ export default handleActions(
     ): SubscriptionState => ({
       ...state,
       notifications: action.data.notifications,
+    }),
+    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_START]: (state: SubscriptionState): SubscriptionState => ({
+      ...state,
+      loading: true,
+    }),
+    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_FAIL]: (state: SubscriptionState): SubscriptionState => ({
+      ...state,
+      loading: false,
+    }),
+    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS]: (
+      state: SubscriptionState,
+      action
+    ): SubscriptionState => ({
+      ...state,
+      loading: false,
+      subscriptions: action.data,
     }),
   },
   defaultState

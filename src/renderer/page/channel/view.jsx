@@ -16,6 +16,7 @@ type Props = {
   claim: {
     name: string,
     claim_id: string,
+    permanent_url: string,
   },
   claimsInChannel: Array<{}>,
   fetchClaims: (string, number) => void,
@@ -58,8 +59,8 @@ class ChannelPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { fetching, claimsInChannel, claim, uri, page, totalPages } = this.props;
-    const { name } = claim;
+    const { fetching, claimsInChannel, claim, page, totalPages } = this.props;
+    const { name, permanent_url: permanentUrl } = claim;
 
     let contentList;
     if (fetching) {
@@ -78,7 +79,7 @@ class ChannelPage extends React.PureComponent<Props> {
         <section className="card__channel-info card__channel-info--large">
           <h1>{name}</h1>
           <div className="card__actions card__actions--no-margin">
-            <SubscribeButton uri={uri} channelName={name} />
+            <SubscribeButton uri={permanentUrl} channelName={name} />
           </div>
         </section>
         <section>{contentList}</section>
