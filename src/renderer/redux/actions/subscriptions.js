@@ -41,20 +41,23 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
 
   Lbryio.call('subscription', 'list')
     .then(dbSubscriptions => {
+      const storedSubscriptions = dbSubscriptions || [];
+
       // User has no subscriptions in db or redux
-      if (!dbSubscriptions && (!reduxSubscriptions || !reduxSubscriptions.length)) {
+      if (!storedSubscriptions.length && (!reduxSubscriptions || !reduxSubscriptions.length)) {
         return [];
       }
 
       // There is some mismatch between redux state and db state
-      // If something is in the db, but not in redux, remove it from the db
-      // If something is in redux, but not in the db, add it
-      if (dbSubscriptions.length !== reduxSubscriptions.length) {
-        const dbSubMap = {};
-        const reduxSubMap = {};
-        const subsNotInDB = [];
+      // If something is in the db, but not in redux, add it to redux
+      // If something is in redux, but not in the db, add it to the db
+      if (storedSubscriptions.length !== reduxSubscriptions.length) {
+        let dbSubMap = {};
+        let reduxSubMap = {};
+        let subsNotInDB = [];
+        let subscriptionsToReturn = reduxSubscriptions.slice();
 
-        dbSubscriptions.forEach(sub => {
+        storedSubscriptions.forEach(sub => {
           dbSubMap[sub.claim_id] = 1;
         });
 
@@ -70,12 +73,19 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
           }
         });
 
+        storedSubscriptions.forEach(sub => {
+          if (!reduxSubMap[sub.claim_id]) {
+            const uri = `lbry://${sub.channel_name}#${sub.claim_id}`;
+            subscriptionsToReturn.push({ uri, channelName: sub.channel_name });
+          }
+        });
+
         return Promise.all(subsNotInDB.map(payload => Lbryio.call('subscription', 'new', payload)))
-          .then(() => reduxSubscriptions)
+          .then(() => subscriptionsToReturn)
           .catch(
             () =>
               // let it fail, we will try again when the navigate to the subscriptions page
-              reduxSubscriptions
+              subscriptionsToReturn
           );
       }
 
