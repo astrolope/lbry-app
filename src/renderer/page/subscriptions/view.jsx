@@ -5,15 +5,15 @@ import type { Subscription } from 'redux/reducers/subscriptions';
 import * as NOTIFICATION_TYPES from 'constants/notification_types';
 import Button from 'component/button';
 import FileList from 'component/fileList';
+import type { Claim } from 'types/claim';
 
 type Props = {
   doFetchClaimsByChannel: (string, number) => void,
   doFetchMySubscriptions: () => void,
   setSubscriptionNotifications: ({}) => void,
-  // TODO build out claim types
   subscriptions: Array<Subscription>,
   isFetchingSubscriptions: boolean,
-  subscriptionClaims: Array<{ uri: string, claims: Array<{}> }>,
+  subscriptionClaims: Array<{ uri: string, claims: Array<Claim> }>,
   subscriptionsBeingFetched: {},
   notifications: {},
 };

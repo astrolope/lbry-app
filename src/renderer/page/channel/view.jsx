@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import SubscribeButton from 'component/subscribeButton';
 import Page from 'component/page';
 import FileList from 'component/fileList';
+import type { Claim } from 'types/claim';
 
 type Props = {
   uri: string,
@@ -13,11 +14,7 @@ type Props = {
   totalPages: number,
   fetching: boolean,
   params: { page: number },
-  claim: {
-    name: string,
-    claim_id: string,
-    permanent_url: string,
-  },
+  claim: Claim,
   claimsInChannel: Array<{}>,
   fetchClaims: (string, number) => void,
   fetchClaimCount: string => void,
