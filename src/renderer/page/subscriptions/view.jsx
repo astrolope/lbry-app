@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Page from 'component/page';
-import type { Subscription } from 'redux/reducers/subscriptions';
+import type { Subscription } from 'types/subscription';
 import * as NOTIFICATION_TYPES from 'constants/notification_types';
 import Button from 'component/button';
 import FileList from 'component/fileList';

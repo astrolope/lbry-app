@@ -2,25 +2,19 @@
 import * as ACTIONS from 'constants/action_types';
 import * as NOTIFICATION_TYPES from 'constants/notification_types';
 import type {
-  Subscription,
   Dispatch,
   SubscriptionState,
   SubscriptionNotifications,
 } from 'redux/reducers/subscriptions';
+import type { Subscription } from 'types/subscription';
 import { selectSubscriptions } from 'redux/selectors/subscriptions';
-import { Lbry, buildURI } from 'lbry-redux';
+import { Lbry, buildURI, parseURI } from 'lbry-redux';
 import { doPurchaseUri } from 'redux/actions/content';
 import Promise from 'bluebird';
 import Lbryio from 'lbryio';
 
 const CHECK_SUBSCRIPTIONS_INTERVAL = 60 * 60 * 1000;
 const SUBSCRIPTION_DOWNLOAD_LIMIT = 1;
-
-const getClaimId = uri => {
-  const index = uri.indexOf('#');
-  const claimId = uri.slice(index + 1);
-  return claimId;
-};
 
 export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () => any) => {
   const {
@@ -37,7 +31,7 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
 
   // most of this logic comes from scenarios where the db isn't synced with redux
   // this will happen if the user stops sharing data
-  dispatch({ type: ACTIONS.FETCH_MY_SUBSCRIPTIONS_START });
+  dispatch({ type: ACTIONS.FETCH_SUBSCRIPTIONS_START });
 
   Lbryio.call('subscription', 'list')
     .then(dbSubscriptions => {
@@ -62,7 +56,7 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
         });
 
         reduxSubscriptions.forEach(sub => {
-          const claimId = getClaimId(sub.uri);
+          const { claimId } = parseURI(sub.uri);
           reduxSubMap[claimId] = 1;
 
           if (!dbSubMap[claimId]) {
@@ -94,13 +88,13 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
     })
     .then(subscriptions => {
       dispatch({
-        type: ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS,
+        type: ACTIONS.FETCH_SUBSCRIPTIONS_SUCCESS,
         data: subscriptions,
       });
     })
     .catch(() => {
       dispatch({
-        type: ACTIONS.FETCH_MY_SUBSCRIPTIONS_FAIL,
+        type: ACTIONS.FETCH_SUBSCRIPTIONS_FAIL,
       });
     });
 };
@@ -217,7 +211,7 @@ export const doChannelSubscribe = (subscription: Subscription) => (
 
   // if the user isn't sharing data, keep the subscriptions entirely in the app
   if (isSharingData) {
-    const claimId = getClaimId(subscription.uri);
+    const { claimId } = parseURI(subscription.uri);
     // They are sharing data, we can store their subscriptions in our internal database
     Lbryio.call('subscription', 'new', {
       channel_name: subscription.channelName,
@@ -243,7 +237,7 @@ export const doChannelUnsubscribe = (subscription: Subscription) => (
   });
 
   if (isSharingData) {
-    const claimId = getClaimId(subscription.uri);
+    const { claimId } = parseURI(subscription.uri);
     Lbryio.call('subscription', 'delete', {
       claim_id: claimId,
     });

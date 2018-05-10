@@ -2,12 +2,7 @@
 import * as ACTIONS from 'constants/action_types';
 import * as NOTIFICATION_TYPES from 'constants/notification_types';
 import { handleActions } from 'util/redux-utils';
-
-export type Subscription = {
-  channelName: string,
-  uri: string,
-  latest: ?string,
-};
+import type { Subscription } from 'types/subscription';
 
 export type NotificationType =
   | NOTIFICATION_TYPES.DOWNLOADING
@@ -72,7 +67,7 @@ type CheckSubscriptionCompleted = {
 };
 
 type fetchedSubscriptionsSucess = {
-  type: ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS,
+  type: ACTIONS.FETCH_SUBSCRIPTIONS_SUCCESS,
   data: Array<Subscription>,
 };
 
@@ -151,15 +146,15 @@ export default handleActions(
       ...state,
       notifications: action.data.notifications,
     }),
-    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_START]: (state: SubscriptionState): SubscriptionState => ({
+    [ACTIONS.FETCH_SUBSCRIPTIONS_START]: (state: SubscriptionState): SubscriptionState => ({
       ...state,
       loading: true,
     }),
-    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_FAIL]: (state: SubscriptionState): SubscriptionState => ({
+    [ACTIONS.FETCH_SUBSCRIPTIONS_FAIL]: (state: SubscriptionState): SubscriptionState => ({
       ...state,
       loading: false,
     }),
-    [ACTIONS.FETCH_MY_SUBSCRIPTIONS_SUCCESS]: (
+    [ACTIONS.FETCH_SUBSCRIPTIONS_SUCCESS]: (
       state: SubscriptionState,
       action: fetchedSubscriptionsSucess
     ): SubscriptionState => ({

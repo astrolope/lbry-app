@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classnames from 'classnames';
-import { DARK_THEME, LIGHT_THEME } from 'constants/settings';
+import { DARK_THEME, LIGHT_THEME } from 'constants/themes';
 
 type Props = {
   dark?: boolean, // always a dark spinner
