@@ -61,7 +61,7 @@ class Page extends React.PureComponent<Props, State> {
     this.loaderTimeout = null;
   }
 
-  loaderTimeout: ?number;
+  loaderTimeout: ?TimeoutID;
 
   render() {
     const { pageTitle, children, noPadding, extraPadding, notContained, loading } = this.props;

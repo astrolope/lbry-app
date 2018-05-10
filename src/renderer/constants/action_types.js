@@ -1,3 +1,13 @@
+/*
+  Constants for redux actions
+  All names should be in present tense
+  ex:
+  XXX_START
+  XXX_SUCCESS
+  XXX_FAIL
+  XXX_COMPLETE // if there is no fail case
+*/
+
 export const WINDOW_FOCUSED = 'WINDOW_FOCUSED';
 export const DAEMON_READY = 'DAEMON_READY';
 export const DAEMON_VERSION_MATCH = 'DAEMON_VERSION_MATCH';

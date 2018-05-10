@@ -2,15 +2,11 @@
 import * as React from 'react';
 
 // is a child component being rendered?
-export const isShowingChildren = (children: React.Node) => {
+export const isShowingChildren = (children: React.Node): boolean => {
   if (Array.isArray(children)) {
-    for (let i = 0; i < children.length; i += 1) {
-      const child = children[i];
-      if (child) {
-        return true;
-      }
-    }
-    return false;
+    const firstChildIndex = children.findIndex(child => child);
+    return firstChildIndex > -1;
   }
+
   return !!children;
 };

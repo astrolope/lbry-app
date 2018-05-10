@@ -46,41 +46,6 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
         return [];
       }
 
-      // User has never synced subscriptions, populate them all
-      // This could be if this is the first time syncing, or if they
-      // subscribed to channels only after turning off share_usage_data
-      if (!dbSubscriptions && reduxSubscriptions.length) {
-        const subscriptionPayloads = reduxSubscriptions.slice().map(subscription => ({
-          channel_name: subscription.channelName,
-          claim_id: getClaimId(subscription.uri),
-        }));
-
-        return Promise.all(
-          subscriptionPayloads.map(payload => Lbryio.call('subscription', 'new', payload))
-        )
-          .then(
-            () =>
-              // sucessfuly synced redux subscriptions with db
-              reduxSubscriptions
-          )
-          .catch(
-            () =>
-              // let it fail, we will try again when the navigate to the subscriptions page
-              reduxSubscriptions
-          );
-      }
-
-      // happens if the user clears there cache
-      // repopulate from the db
-      if (dbSubscriptions.length && !reduxSubscriptions.length) {
-        const newSubscriptions = dbSubscriptions.map(sub => ({
-          channelName: sub.channel_name,
-          uri: `lbry://${sub.channel_name}#${sub.claim_id}`,
-        }));
-
-        return newSubscriptions;
-      }
-
       // There is some mismatch between redux state and db state
       // If something is in the db, but not in redux, remove it from the db
       // If something is in redux, but not in the db, add it
@@ -88,7 +53,6 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
         const dbSubMap = {};
         const reduxSubMap = {};
         const subsNotInDB = [];
-        const subsToRemoveFromDb = [];
 
         dbSubscriptions.forEach(sub => {
           dbSubMap[sub.claim_id] = 1;
@@ -106,18 +70,7 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
           }
         });
 
-        dbSubscriptions.forEach(sub => {
-          if (!reduxSubMap[sub.claim_id]) {
-            subsToRemoveFromDb.push({
-              claim_id: sub.claim_id,
-            });
-          }
-        });
-
-        return Promise.all(
-          subsNotInDB.map(payload => Lbryio.call('subscription', 'new', payload)),
-          subsToRemoveFromDb.map(payload => Lbryio.call('subscription', 'delete', payload))
-        )
+        return Promise.all(subsNotInDB.map(payload => Lbryio.call('subscription', 'new', payload)))
           .then(() => reduxSubscriptions)
           .catch(
             () =>

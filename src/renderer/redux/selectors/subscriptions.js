@@ -28,7 +28,7 @@ export const selectSubscriptionClaims = createSelector(
     const fetchedSubscriptions = [];
 
     savedSubscriptions.forEach(subscription => {
-      const channelClaims = [];
+      let channelClaims = [];
 
       // if subscribed channel has content
       if (channelIds[subscription.uri] && channelIds[subscription.uri]['1']) {
