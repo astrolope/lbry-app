@@ -52,10 +52,10 @@ export const doFetchMySubscriptions = () => (dispatch: Dispatch, getState: () =>
       // If something is in the db, but not in redux, add it to redux
       // If something is in redux, but not in the db, add it to the db
       if (storedSubscriptions.length !== reduxSubscriptions.length) {
-        let dbSubMap = {};
-        let reduxSubMap = {};
-        let subsNotInDB = [];
-        let subscriptionsToReturn = reduxSubscriptions.slice();
+        const dbSubMap = {};
+        const reduxSubMap = {};
+        const subsNotInDB = [];
+        const subscriptionsToReturn = reduxSubscriptions.slice();
 
         storedSubscriptions.forEach(sub => {
           dbSubMap[sub.claim_id] = 1;

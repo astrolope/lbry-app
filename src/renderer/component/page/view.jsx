@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import classnames from 'classnames';
-import Spinner from 'component/common/spinner';
+import Spinner from 'component/spinner';
 import { isShowingChildren } from 'util/dom';
 
 // time in ms to wait to show loading spinner
