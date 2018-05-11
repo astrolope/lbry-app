@@ -46,7 +46,6 @@ ipcRenderer.on('open-uri-requested', (event, uri, newSession) => {
       let navpage;
       navpage = uri.replace(specialURL,'');
       app.store.dispatch(doNavigate('/' + navpage));
-    }  
     } else {
       app.store.dispatch(doNavigate('/show', { uri }));
     }
