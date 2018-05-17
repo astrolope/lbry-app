@@ -3,16 +3,18 @@ import React from 'react';
 import Button from 'component/button';
 import { FormField } from 'component/common/form';
 import UriIndicator from 'component/uriIndicator';
+import type { Claim } from 'types/claim';
 
 type Props = {
   uri: string,
   title: string,
-  claim: { claim_id: string },
+  claim: Claim,
   errorMessage: string,
   isPending: boolean,
   sendSupport: (number, string, string) => void,
   onCancel: () => void,
   sendTipCallback?: () => void,
+  balance: number,
 };
 
 type State = {
@@ -50,7 +52,8 @@ class WalletSendTip extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { title, errorMessage, isPending, uri, onCancel } = this.props;
+    const { title, errorMessage, isPending, uri, onCancel, balance } = this.props;
+    const { amount } = this.state;
 
     return (
       <div>
@@ -81,7 +84,7 @@ class WalletSendTip extends React.PureComponent<Props, State> {
             <Button
               button="primary"
               label={__('Send')}
-              disabled={isPending}
+              disabled={isPending || amount <= 0 || amount > balance}
               onClick={this.handleSendButtonClicked}
             />
             <Button button="alt" label={__('Cancel')} onClick={onCancel} navigateParams={{ uri }} />
