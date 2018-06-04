@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Lbry, buildURI, normalizeURI, MODALS } from 'lbry-redux';
 import Video from 'component/video';
 import Thumbnail from 'component/common/thumbnail';
+import ModelViewer from 'component/modelViewer';
 import FilePrice from 'component/filePrice';
 import FileDetails from 'component/fileDetails';
 import FileActions from 'component/fileActions';
@@ -141,7 +142,8 @@ class FilePage extends React.Component<Props> {
             {isPlayable ? (
               <Video className="content__embedded" uri={uri} />
             ) : (
-              <Thumbnail shouldObscure={shouldObscureThumbnail} src={thumbnail} />
+              <ModelViewer className="content__embedded" uri={uri} />
+              // <Thumbnail shouldObscure={shouldObscureThumbnail} src={thumbnail} />
             )}
             {!isPlaying && (
               <div className="card-media__internal-links">
